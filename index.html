@@ -107,37 +107,114 @@
               
               
 
- 				// model
+				model №1
+			  const curve = new THREE.QuadraticBezierCurve(
+			  new THREE.Vector2( 50, 0 ),
+			  new THREE.Vector2( 150, 60 ),
+			  new THREE.Vector2( 40, 200 )
+			  );
+			  const points = curve.getPoints( 20 );
+			  texture = textureLoader.load( 'textures/clay-4.jpg' );
+			  texture.repeat.set( 2, 2 );
+			  
+			  material = new THREE.MeshPhongMaterial(
+			  { map: texture, side: THREE.DoubleSide } );
+			  
+			  geometry = new THREE.LatheGeometry( points, 64 );
+			  const lathe = new THREE.Mesh( geometry, material );
+			  scene.add( lathe );
+			  
+			  // model №2
+			  
+			  const curve2 = new THREE.CubicBezierCurve(
+				new THREE.Vector2( 50, 0 ),
+				new THREE.Vector2( 150, 50 ),
+				new THREE.Vector2( 60, 160 ),
+				new THREE.Vector2( 200, 200 ),
+			  );
+			  const points2 = curve2.getPoints( 50 );
+			  geometry = new THREE.LatheGeometry( points, 64 );
+			  const tas = new THREE.Mesh( geometry, material );
+			  tas.position.set( -500, 0, 0 );
+			  scene.add( tas );
+			  
+			  // model №3
+			  
+			  const curve3 = new THREE.QuadraticBezierCurve(
+			  new THREE.Vector2( 200, 0 ),
+			  new THREE.Vector2( 150, 70 ),
+			  new THREE.Vector2( 50, 50 )
+			  );
+			  
+			  const points3 = curve3.getPoints( 20 );
+			  
+			  const curve4 = new THREE.QuadraticBezierCurve(
+			  new THREE.Vector2( 150, 300 ),
+			  new THREE.Vector2( 170, 100 ),
+			  new THREE.Vector2( 50, 50 )
+			  );
+			  
+			  const points4 = curve4.getPoints( 20 );
+			  
+			  const points5 = [];
+			  for ( let i = 0; i < 20; i ++) {
+			    points5.push( points3[i] );
+			  }
+			  for ( let i = 0; i < 20; i ++ ) {
+			    points5.push( points4[i] );
+		      }
+			  var material = new THREE.MeshPhongMaterial( { color: 0xc41e3a, side: THREE.DoubleSide } );
+			  geometry = new THREE.LatheGeometry( points5, 64 );
+			  const bokal = new THREE.Mesh( geometry, material );
+			  bokal.position.set( 500, 0, 0 );
+			  scene.add( bokal );
+				
 
-				const onProgress = function ( xhr ) {
+			
+						// Анимация
+            animate();
+        }	
+              
+                
 
-					if ( xhr.lengthComputable ) {
+			// EVENT HANDLERS
 
-						const percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( percentComplete.toFixed( 2 ) + '% downloaded' );
 
-					}
+			function onWindowResize() {
 
-				};
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
 
-				new MTLLoader()
-					.setPath( 'https://threejs.org/examples/models/obj/male02/' )
-					.load( 'male02.mtl', function ( materials ) {
+				renderer.setSize( window.innerWidth, window.innerHeight );
 
-						materials.preload();
+			}
 
-						new OBJLoader()
-							.setMaterials( materials )
-							.setPath( 'https://threejs.org/examples/models/obj/male02/' )
-							.load( 'male02.obj', function ( object ) {
+			//
 
-								object.position.set (-1500, -2400, -200 );
-                                object.rotation.y = Math.PI / 2;
-								object.scale.setScalar( 10 );
-								scene.add( object );
+			function animate() {
 
-							}, onProgress );
+				requestAnimationFrame( animate );
+				controls.update(500); //
+				render();
 
+			}
+
+			function render() {
+
+				//var timer = Date.now() * 0.0001;
+
+				//camera.position.x = Math.cos( timer ) * 800;
+				//camera.position.z = Math.sin( timer ) * 800;
+
+				//camera.lookAt( scene.position );
+
+				renderer.render( scene, camera );
+
+			}		
+
+				
+
+				
 					} );             
               
               
