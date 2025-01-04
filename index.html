@@ -1,193 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <link rel="stylesheet" type="text/css" href="style.css"> 
+  <title>Мой сайт</title> 
+</head> 
+<body> 
+  <div id="container"> 
+    <div id="header" style="width: 800px; height: 300px;"></div> 
+    <div id="sidebar"> 
+      <p><a href="index.html">Главная</a></p> 
+      <p><a href="#ib.html">О направлении</a></p> 
+      <p><a href="#news.html">Новости ИБ</a></p> 
+      <p><a href="#info.html">О себе</a></p> 
+      <p><a href="#nfuunit.html">О вузе</a></p>  
+    </div> 
+    <div id="content"> 
+      <h2>Опрос общественного мнения показал</h2> 
+      <ul> 
+        <li>что пароход изобретен: Петром I, А. Эйнштейном и А. Поповым;</li> 
+        <li>Диего Веласкес писал свои полотна в стиле: империализма, кубизма и империосионизма;</li> 
+        <li>Фаросский маяк находится в Фаросе;</li> 
+        <li>конфуцианство возникло в: Италии, Корее и Франции;</li> 
+        <li>богами торговли и воровства в Древней Греции были: Марс, Меркурий и Дионис;</li> 
+        <li>Франция – это город;</li> 
+        <li>богами загробного мира в Египте были: Аид, Анубис и Ассирис;</li> 
+        <li>столица Золотой Орды — Монголия;</li> 
+        <li>главные противники Александра Македонского: татаро-монголы, Дедал и Цезарь;</li> 
+        <li>священными птицами — символами Афин были: ворона и орел;</li> 
+        <li>в Древней Греции морями повелевали боги: Плутон, Нептун и Тритон.</li> 
+      </ul>  
+    </div> 
+    <div id="footer">© Иванов</div> 
+  </div>  
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
- <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" type="text/css" href="style.css">
-  <title>Нефтекамский нефтяной колледж</title>
- </head>
- <body>
-  <div id="container">
-   <div id="header"></div>
-   <div id="sidebar">
-    <p><a href="index.html">Главная</a></p>
-    <p><a href="#ib.html">Студентам</a></p>
-    <p><a href="#news.html">Новости ИБ</a></p>
-    <p><a href="#info.html">О себе</a></p>
-    <p><a href="#nfuunit.html">О колледже</a></p>	
-   </div>
-   <div id="content">
-    <h2>Краткая биография</h2>
-    <ul>
-     <p>Ноябрь 1955 года. Открытие Арланского нефтяного месторождения. Скважина №3 близ деревни Арлан.
-	1 сентября 1959 года. Открытие Арланского вечернего филиал Октябрьского нефтяного техникума. Средняя школа в р.п. НиколоБерёзовка.
-1 октября 1962 года. Начало занятий в Нефтекамском вечернем нефтяном техникуме. Р.п.Нефтекамск, ул. Нефтяников, 11А
- </p>
-    </ul> 
-   </div>
-   <div id="footer">© Казанцева</div>
-  </div> 
- </body>
+  <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script> 
+
+  <script type="importmap"> 
+    { 
+      "imports": { 
+        "three": "https://threejs.org/build/three.module.js", 
+        "three/addons/": "https://threejs.org/examples/jsm/" 
+      } 
+    } 
+  </script> 
+
+  <script type="module"> 
+    import * as THREE from 'three'; 
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; 
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js'; 
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'; 
+    
+    const height_container = 300; 
+    const width_container = 800; 
+    let camera, scene, renderer; 
+    let orbitcontrol; 
+    let ambientLight, light; 
+    const letters = "НЕФТЕКАМСКИЙ ФИЛИАЛ УУНИТ "; 
+    const radius = 400; 
+    const fontLoader = new FontLoader(); 
+    
+    init();  
+    animate(); 
+  
+    function init() { 
+      const container = document.getElementById("header"); 
+
+      // CAMERA 
+      camera = new THREE.PerspectiveCamera( 45, width_container / height_container, 1, 1500 );
+      camera.position.set( 0, 200, 700 ); 
+
+      // SCENE 
+      scene = new THREE.Scene(); 
+
+      // LIGHTS 
+      ambientLight = new THREE.AmbientLight( 0x333333, 3.0 ); 
+      light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); 
+      light.position.set( 1, 1, 1 ); 
+
+      scene.add(ambientLight); 
+      scene.add(light); 
+
+      // RENDERER 
+      renderer = new THREE.WebGLRenderer({ antialias: true }); 
+      renderer.setSize(width_container, height_container); 
+      container.appendChild(renderer.domElement); 
+
+      // CONTROLS 
+      orbitcontrol = new OrbitControls(camera, renderer.domElement); 
+      orbitcontrol.enableZoom = false; 
+
+      // Load font that supports Cyrillic
+      fontLoader.load('https://threejs.org/examples/fonts/helvetiker_both.typeface.json', function(font) {
+        const lettersGroup = new THREE.Group();
+        const angleStep = (2 * Math.PI) / letters.length;
+
+        letters.split('').forEach((letter, index) => {
+          const textGeom = new TextGeometry(letter, {
+            font: font,
+            size: 40,
+            height: 5,
+          });
+          const textMaterial = new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff });
+          const textMesh = new THREE.Mesh(textGeom, textMaterial);
+          
+          const angle = angleStep * index;
+          textMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
+          textMesh.rotation.y = -angle; // face outward
+
+          lettersGroup.add(textMesh);
+        });
+
+        scene.add(lettersGroup);
+      });
+    }
+
+    function animate() { 
+      requestAnimationFrame(animate); 
+      orbitcontrol.update(); 
+      renderer.render(scene, camera); 
+    } 
+  </script> 
+</body> 
 </html>
-
-
-		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-
-		<script type="importmap">
-			{
-				"imports": {
-					"three": "https://threejs.org/build/three.module.js",
-					"three/addons/": "https://threejs.org/examples/jsm/"
-				}
-			}
-		</script>
-		<script type="module">
-
-			import * as THREE from 'three';
-			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-			import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-			import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-			var height_container=220; var width_container=789;
-			var camera, scene, renderer;
-			var orbitcontrol; var cameraPolarAngle = Math.PI/2;
-			var ambientLight, light;
-			var group; var alphabet = "НЕФТЕКАМСКИЙ НЕФТЯНОЙ КОЛЛЕДЖ "; //"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-			var phi = 2 * Math.PI / ( alphabet.length ); var R = 400;
-			var font = undefined;
-			var fontName = 'HeinzLabel'; // helvetiker, optimer, gentilis, droid sans, droid serif
-			var fontWeight = 'Regular'; // normal bold
-			
-			init(); 
-			animate();
-
-			function init() {
-
-				//var container = document.createElement( 'div' );
-				//document.body.appendChild( container );
-				var container = document.getElementById("header");
-				
-				// CAMERA
-				camera = new THREE.PerspectiveCamera( 45, width_container / height_container, 1, 1500 );
-				//camera.position.set( 0, 0, 660 );
-				camera.position.set( 0, 700 * Math.tan( Math.PI/2 - cameraPolarAngle ), 700 );
-				// LIGHTS
-				ambientLight = new THREE.AmbientLight( 0x333333, 3.0 );	// 0.2
-
-				light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
-				light.position.set( 1, 1, 1 );				
-				// direction is set in GUI
-
-				// RENDERER
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				//renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setSize( width_container, height_container );
-				container.appendChild( renderer.domElement );
-
-				// CONTROLS
-				orbitcontrol = new OrbitControls( camera, renderer.domElement );
-				orbitcontrol.addEventListener( 'change', render );
-				orbitcontrol.rotateSpeed = 1; 
-				orbitcontrol.enableZoom = false;  
-				orbitcontrol.zoomSpeed = 0.5;  
-
-				orbitcontrol.minDistance = 100;
-				orbitcontrol.maxDistance = 1500;
-                //orbitcontrol.minPolarAngle = cameraPolarAngle; // radians
-				//orbitcontrol.maxPolarAngle = cameraPolarAngle; // radians
-              
-				//orbitcontrol.minAzimuthAngle = - Math.PI/12; // radians
-				//orbitcontrol.maxAzimuthAngle = Math.PI/12; // radians				
-				orbitcontrol.enableDamping = true;
-
-				// scene itself
-				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0xD3D3D3 );
-
-				scene.add( ambientLight );
-				scene.add( light );
-
-				loadFont();
-			}
-			
-			function createText() {
-
-
-				// Объекты меняем тут
-				
-				group = new THREE.Group();
-
-				group.rotation.x = Math.PI / 12;
-
-				scene.add( group );
-				for ( let k = 0; k < alphabet.length; k++ )  {
-
-				var text_geometry = new TextGeometry( alphabet.charAt(k), {
-					size: 100,
-					height: 10,
-					curveSegments: 16,
-					font: font
-				});
-
-				var material = new THREE.MeshPhongMaterial( { color: 0x00BFFF } );
-				var text3D = new THREE.Mesh( text_geometry, material );
-
-				group.add( text3D );
-
-
-				text_geometry.computeBoundingBox();
-				
-				var text_width = 620; //text_geometry.boundingBox.max.x – text_geometry.boundingBox.min.x;
-				text_width = text_geometry.boundingBox.max.x-text_geometry.boundingBox.min.x;
-				
-				var symbol = new THREE.Group();
-				symbol.add( text3D );
-
-				text3D.position.x = - text_width / 2;
-				//text3D.rotation.y = - Math.PI/2;
-				symbol.position.set( R * Math.sin( k * phi ), 6, R * Math.cos( k * phi ) );
-
-				symbol.rotation.y = k * phi
-
-				scene.add( symbol ); group.add( symbol );   
-
-				}
-			}			
-			
-			
-			function loadFont() {
-
-				const loader = new FontLoader();
-				loader.load( 'https://gevaraweb.github.io/webgl/fonts/' + fontName + '_' + fontWeight + '.json', function ( response ) {
-				//loader.load( 'Arial.json', function ( response ) {
-				//loader.load( 'http://nfbgu2.ru/webgl/Arial.json', function ( response ) {
-
-					font = response;
-					createText();
-
-				} );
-
-			}			
-
-
-			//
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-				orbitcontrol.update(); //
-				//Cube.position.x +=1;
-				//Cube.rotation.z += 0.1;
-				render();
-
-			}
-
-			function render() {
-
-				renderer.render( scene, camera );
-
-			}			
-
-
-		</script>
