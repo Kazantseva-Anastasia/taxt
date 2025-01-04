@@ -1,18 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>three.js webgl - геометрические фигуры</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="https://threejs.org/examples/main.css">
-	</head>
-	<body>
-		<div id="info">
-			Модель помещения
-		</div>
 
-		<!-- Import maps polyfill -->
-		<!-- Remove this when import maps will be widely supported -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Мой сайт</title>
+ </head>
+ <body>
+  <div id="container">
+   <div id="header"></div>
+   <div id="sidebar">
+    <p><a href="index.html">Главная</a></p>
+    <p><a href="#ib.html">О направлении</a></p>
+    <p><a href="#news.html">Новости ИБ</a></p>
+    <p><a href="#info.html">О себе</a></p>
+    <p><a href="#nfuunit.html">О вузе</a></p>	
+   </div>
+   <div id="content">
+    <h2>Опрос общественного мнения показал</h2>
+    <ul>
+     <li>что пароход изобретен: Петром I, А. Эйнштейном и А. Поповым;</li>
+     <li>Диего Веласкес писал свои полотна в стиле: империализма, кубизма 
+     и империосионизма;</li>
+     <li>Фаросский маяк находится в Фаросе;</li>
+     <li>конфуцианство возникло в: Италии, Корее и Франции;</li>
+     <li>богами торговли и воровства в Древней Греции были: Марс, Меркурий 
+     и Дионис;</li>
+     <li>Франция – это город;</li>
+     <li>богами загробного мира в Египте были: Аид, Анубис и Ассирис;</li>
+     <li>столица Золотой Орды — Монголия;</li>
+     <li>главные противники Александра Македонского: татаро-монголы, Дедал 
+     и Цезарь;</li>
+     <li>священными птицами — символами Афин были: ворона и орел;</li>
+     <li>в Древней Греции морями повелевали боги: Плутон, Нептун и Тритон.</li>
+    </ul> 
+   </div>
+   <div id="footer">© Иванов</div>
+  </div> 
+ </body>
+</html>
+
+
 		<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
 
 		<script type="importmap">
@@ -27,26 +56,33 @@
 
 			import * as THREE from 'three';
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-			import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
-			import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-
+			import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+			import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+			var height_container=220; var width_container=789;
 			var camera, scene, renderer;
-			var controls;
+			var orbitcontrol; var cameraPolarAngle = Math.PI/2;
 			var ambientLight, light;
-          	let object;
-			init();
+			var group; var alphabet = "НЕФТЕКАМСКИЙ ФИЛИАЛ УУНИТ "; //"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+			var phi = 2 * Math.PI / ( alphabet.length ); var R = 400;
+			var font = undefined;
+			var fontName = 'HeinzLabel'; // helvetiker, optimer, gentilis, droid sans, droid serif
+			var fontWeight = 'Regular'; // normal bold
+			
+			init(); 
 			animate();
 
 			function init() {
 
-				var container = document.createElement( 'div' );
-				document.body.appendChild( container );
-
+				//var container = document.createElement( 'div' );
+				//document.body.appendChild( container );
+				var container = document.getElementById("header");
+				
 				// CAMERA
-				camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 1, 80000 );
-              
+				camera = new THREE.PerspectiveCamera( 45, width_container / height_container, 1, 1500 );
+				//camera.position.set( 0, 0, 660 );
+				camera.position.set( 0, 700 * Math.tan( Math.PI/2 - cameraPolarAngle ), 700 );
 				// LIGHTS
-				ambientLight = new THREE.AmbientLight( 0x333333, 50 );	// 0.2
+				ambientLight = new THREE.AmbientLight( 0x333333, 3.0 );	// 0.2
 
 				light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
 				light.position.set( 1, 1, 1 );				
@@ -55,26 +91,25 @@
 				// RENDERER
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				//renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize( width_container, height_container );
 				container.appendChild( renderer.domElement );
 
-				// EVENTS
-				window.addEventListener( 'resize', onWindowResize, false );
-
 				// CONTROLS
-				controls = new OrbitControls( camera, renderer.domElement );
-				controls.addEventListener( 'change', render );
-				//controls.rotateSpeed = 0.05; 
-				controls.enableZoom = true;  
-				controls.zoomSpeed = 0.5;  
+				orbitcontrol = new OrbitControls( camera, renderer.domElement );
+				orbitcontrol.addEventListener( 'change', render );
+				orbitcontrol.rotateSpeed = 1; 
+				orbitcontrol.enableZoom = false;  
+				orbitcontrol.zoomSpeed = 0.5;  
 
-				controls.minDistance = 500;
-				controls.maxDistance = 5000;
-				
-				controls.enableDamping = true;
-				camera.position.set( 0, -500, 2900 );
-			    controls.target.set( 50, 0, 50 );           
+				orbitcontrol.minDistance = 100;
+				orbitcontrol.maxDistance = 1500;
+                //orbitcontrol.minPolarAngle = cameraPolarAngle; // radians
+				//orbitcontrol.maxPolarAngle = cameraPolarAngle; // radians
               
+				//orbitcontrol.minAzimuthAngle = - Math.PI/12; // radians
+				//orbitcontrol.maxAzimuthAngle = Math.PI/12; // radians				
+				orbitcontrol.enableDamping = true;
 
 				// scene itself
 				scene = new THREE.Scene();
@@ -82,174 +117,83 @@
 
 				scene.add( ambientLight );
 				scene.add( light );
-			
 
-				// scene objects
-
-				var materials = [ ];
-				var textureLoader = new THREE.TextureLoader();
-				for ( let i = 1; i <= 6; i++ ) {
-			var texture = textureLoader.load( 'textures/' + String(i) + '.jpg' );
-			var material = new THREE.MeshPhongMaterial( 
-              		{ map: texture, side: THREE.BackSide } );
-                  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-                  texture.repeat.x = - 1;
-                  if (i==4 || i==3 ) texture.repeat.set( 3, 3 );
-                  if (i==3) texture.offset.set(0.05, 0.2);
-				materials.push( material );
-				}              
-              
-				var geometry = new THREE.BoxGeometry ( 5000, 5000, 5000 );		
-				var Cube = new THREE.Mesh( geometry, materials );
-				Cube.position.y = 100;
-				scene.add( Cube );
-
-              
-              
-
-				model №1
-			  const curve = new THREE.QuadraticBezierCurve(
-			  new THREE.Vector2( 50, 0 ),
-			  new THREE.Vector2( 150, 60 ),
-			  new THREE.Vector2( 40, 200 )
-			  );
-			  const points = curve.getPoints( 20 );
-			  texture = textureLoader.load( 'textures/clay-4.jpg' );
-			  texture.repeat.set( 2, 2 );
-			  
-			  material = new THREE.MeshPhongMaterial(
-			  { map: texture, side: THREE.DoubleSide } );
-			  
-			  geometry = new THREE.LatheGeometry( points, 64 );
-			  const lathe = new THREE.Mesh( geometry, material );
-			  scene.add( lathe );
-			  
-			  // model №2
-			  
-			  const curve2 = new THREE.CubicBezierCurve(
-				new THREE.Vector2( 50, 0 ),
-				new THREE.Vector2( 150, 50 ),
-				new THREE.Vector2( 60, 160 ),
-				new THREE.Vector2( 200, 200 ),
-			  );
-			  const points2 = curve2.getPoints( 50 );
-			  geometry = new THREE.LatheGeometry( points, 64 );
-			  const tas = new THREE.Mesh( geometry, material );
-			  tas.position.set( -500, 0, 0 );
-			  scene.add( tas );
-			  
-			  // model №3
-			  
-			  const curve3 = new THREE.QuadraticBezierCurve(
-			  new THREE.Vector2( 200, 0 ),
-			  new THREE.Vector2( 150, 70 ),
-			  new THREE.Vector2( 50, 50 )
-			  );
-			  
-			  const points3 = curve3.getPoints( 20 );
-			  
-			  const curve4 = new THREE.QuadraticBezierCurve(
-			  new THREE.Vector2( 150, 300 ),
-			  new THREE.Vector2( 170, 100 ),
-			  new THREE.Vector2( 50, 50 )
-			  );
-			  
-			  const points4 = curve4.getPoints( 20 );
-			  
-			  const points5 = [];
-			  for ( let i = 0; i < 20; i ++) {
-			    points5.push( points3[i] );
-			  }
-			  for ( let i = 0; i < 20; i ++ ) {
-			    points5.push( points4[i] );
-		      }
-			  var material = new THREE.MeshPhongMaterial( { color: 0xc41e3a, side: THREE.DoubleSide } );
-			  geometry = new THREE.LatheGeometry( points5, 64 );
-			  const bokal = new THREE.Mesh( geometry, material );
-			  bokal.position.set( 500, 0, 0 );
-			  scene.add( bokal );
-				
-
-			
-						// Анимация
-            animate();
-        }	
-              
-                
-
-			// EVENT HANDLERS
-
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
+				loadFont();
 			}
+			
+			function createText() {
+
+
+				// Объекты меняем тут
+				
+				group = new THREE.Group();
+
+				group.rotation.x = Math.PI / 12;
+
+				scene.add( group );
+				for ( let k = 0; k < alphabet.length; k++ )  {
+
+				var text_geometry = new TextGeometry( alphabet.charAt(k), {
+					size: 100,
+					height: 10,
+					curveSegments: 16,
+					font: font
+				});
+
+				var material = new THREE.MeshPhongMaterial( { color: 0x00BFFF } );
+				var text3D = new THREE.Mesh( text_geometry, material );
+
+				group.add( text3D );
+
+
+				text_geometry.computeBoundingBox();
+				
+				var text_width = 620; //text_geometry.boundingBox.max.x – text_geometry.boundingBox.min.x;
+				text_width = text_geometry.boundingBox.max.x-text_geometry.boundingBox.min.x;
+				
+				var symbol = new THREE.Group();
+				symbol.add( text3D );
+
+				text3D.position.x = - text_width / 2;
+				//text3D.rotation.y = - Math.PI/2;
+				symbol.position.set( R * Math.sin( k * phi ), 6, R * Math.cos( k * phi ) );
+
+				symbol.rotation.y = k * phi
+
+				scene.add( symbol ); group.add( symbol );   
+
+				}
+			}			
+			
+			
+			function loadFont() {
+
+				const loader = new FontLoader();
+				loader.load( 'https://gevaraweb.github.io/webgl/fonts/' + fontName + '_' + fontWeight + '.json', function ( response ) {
+				//loader.load( 'Arial.json', function ( response ) {
+				//loader.load( 'http://nfbgu2.ru/webgl/Arial.json', function ( response ) {
+
+					font = response;
+					createText();
+
+				} );
+
+			}			
+
 
 			//
 
 			function animate() {
 
 				requestAnimationFrame( animate );
-				controls.update(500); //
+				orbitcontrol.update(); //
+				//Cube.position.x +=1;
+				//Cube.rotation.z += 0.1;
 				render();
 
 			}
 
 			function render() {
-
-				//var timer = Date.now() * 0.0001;
-
-				//camera.position.x = Math.cos( timer ) * 800;
-				//camera.position.z = Math.sin( timer ) * 800;
-
-				//camera.lookAt( scene.position );
-
-				renderer.render( scene, camera );
-
-			}		
-
-				
-
-				
-					} );             
-              
-              
-			}
-
-			// EVENT HANDLERS
-
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			//
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-				controls.update(500); //
-				render();
-
-			}
-
-			function render() {
-
-				//var timer = Date.now() * 0.0001;
-
-				//camera.position.x = Math.cos( timer ) * 800;
-				//camera.position.z = Math.sin( timer ) * 800;
-
-				//camera.lookAt( scene.position );
 
 				renderer.render( scene, camera );
 
@@ -257,6 +201,3 @@
 
 
 		</script>
-
-	</body>
-</html>
